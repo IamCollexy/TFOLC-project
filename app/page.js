@@ -1,95 +1,66 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
+import { useState, useEffect } from 'react';
+import {
+  LoadScript,
+  GoogleMap,
+  InfoWindow,
+  Marker,
+} from '@react-google-maps/api';
 
-export default function Home() {
+const Map = () => {
+  const [map, setMap] = useState(null);
+  const [service, setService] = useState(null);
+  const [infowindow, setInfowindow] = useState(null);
+
+  useEffect(() => {
+    const request = {
+      query: 'Museum of Contemporary Art Australia',
+      fields: ['name', 'geometry'],
+    };
+
+    if (service && map) {
+      service.findPlaceFromQuery(request, (results, status) => {
+        if (status === 'OK' && results) {
+          for (let i = 0; i < results.length; i++) {
+            createMarker(results[i]);
+          }
+
+          map.setCenter(results[0].geometry.location);
+        }
+      });
+    }
+  }, [service, map]);
+
+  const createMarker = (place) => {
+    if (!place.geometry || !place.geometry.location) return;
+
+    new google.maps.Marker({
+      map,
+      position: place.geometry.location,
+      title: place.name,
+      animation: google.maps.Animation.DROP,
+    });
+  };
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <LoadScript googleMapsApiKey="YOUR_API_KEY">
+      <GoogleMap
+        mapContainerStyle={{ width: '100%', height: '400px' }}
+        center={{ lat: -33.867, lng: 151.195 }}
+        zoom={15}
+        onLoad={(map) => setMap(map)}
+      >
+        {infowindow && (
+          <InfoWindow
+            position={{ lat: -33.867, lng: 151.195 }}
+            onCloseClick={() => setInfowindow(null)}
           >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+            <div>Museum of Contemporary Art Australia</div>
+          </InfoWindow>
+        )}
+      </GoogleMap>
+    </LoadScript>
   );
-}
+};
+
+export default Map;
