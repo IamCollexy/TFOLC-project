@@ -180,9 +180,7 @@ const LoginForm = ({ onSubmit }) => {
             fullWidth
             value={formik.values.name}
             onChange={formik.handleChange}
-            error={
-              formik.touched.email && Boolean(formik.errors.name)
-            }
+            error={formik.touched.name && Boolean(formik.errors.name)}
           />
           <Typography color="error">{formik.errors.name}</Typography>
           <OutlinedInput
