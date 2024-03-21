@@ -8,55 +8,10 @@ const page = () => {
     <Box
       sx={{
         m: '50px ',
+        textAlign: 'center',
       }}
     >
-      <Typography variant="h4">USERS</Typography>
-      <Box
-        sx={{
-          my: '20px',
-        }}
-      >
-        <Typography variant="h6">
-          <b>Admin:</b>
-        </Typography>
-        <Typography variant="body2">Username: Admin</Typography>
-        <Typography variant="body2">
-          Password: Whatever you want
-        </Typography>
-      </Box>
-      <Box>
-        <Typography variant="h6">
-          <b>Agent:</b>
-        </Typography>
-        <Typography variant="body2">Username: Agent</Typography>
-        <Typography variant="body2">
-          Password: Whatever you want
-        </Typography>
-      </Box>
-      <Box
-        sx={{
-          my: '20px',
-        }}
-      >
-        <Typography variant="h6">
-          <b>Customer:</b>
-        </Typography>
-        <Typography variant="body2">Username: Customer</Typography>
-        <Typography variant="body2">
-          Password: Whatever you want
-        </Typography>
-      </Box>
-      <Box
-        sx={{
-          my: '30px',
-        }}
-      >
-        <Link href="/auth">
-          <Button variant="contained" color="primary" fullWidth>
-            Login
-          </Button>
-        </Link>
-      </Box>
+      <Typography variant="h2">Welcome!!</Typography>
     </Box>
   );
 };

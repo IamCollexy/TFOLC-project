@@ -1,11 +1,11 @@
 'use client';
-import ResetPasswordForm from '@/components/auth/reset';
+import LoginForm from '@/components/auth/signIn';
 import React from 'react';
 
 const page = () => {
   return (
     <div>
-      <ResetPasswordForm />
+      <LoginForm />
     </div>
   );
 };

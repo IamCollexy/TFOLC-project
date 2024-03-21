@@ -12,8 +12,6 @@ import {
   CircularProgress,
 } from '@mui/material';
 import * as Yup from 'yup';
-import Image from 'next/image';
-import { useTheme } from '@mui/material/styles';
 import { AlertNotification } from '../alert/AlertNotifiction';
 import { useRouter } from 'next/navigation';
 import { responseHandler } from '@/src/utils/apiResponseHandler';
@@ -38,7 +36,6 @@ const SignupSchema = Yup.object().shape({
 });
 
 const SignupForm = () => {
-  const theme = useTheme();
   const router = useRouter();
   const [showNotification, setShowNotification] = useState(false);
   const [notificationData, setNotificationData] = useState({
@@ -46,8 +43,10 @@ const SignupForm = () => {
     message: '',
   });
   const [showPassword, setShowPassword] = useState(false);
-
-  const [userAuth, { isLoading, reset }] = useSendDataMutation();
+  const [
+    register,
+    { data, error, isLoading, isSuccess, isError, reset },
+  ] = useSendDataMutation();
 
   const formik = useFormik({
     initialValues: {
@@ -59,32 +58,24 @@ const SignupForm = () => {
     validationSchema: SignupSchema,
     onSubmit: async (values, { resetForm }) => {
       setShowNotification(false);
+      const response = await register({
+        url: 'users',
+        data: {
+          username: values.fullName,
+          email: values.email,
+          password: values.password,
+        },
+        type: 'POST',
+      });
 
-      // handle request
-      // const request = await userAuth({
-      //   url: 'auth/signUp',
-      //   data: {
-      //     fullName: values.fullName,
-      //     email: values.email,
-      //     password: values.password,
-      //     confirmPassword: values.confirmPassword,
-      //   },
-      //   type: 'POST',
-      // });
       // handle response
-      // const response = responseHandler(request);
-      // response && setNotificationData(response);
-      // response && setShowNotification(true);
-      // response &&
-      //   response.type === 'success' &&
-      router.push('/auth');
-      // router.push({
-      //   pathname: 'auth',
-      //   // query: { email: response.data.user.email },
-      // });
-      // response && formik.resetForm();
-
-      // scrollToTop();
+      const responseData = responseHandler(response);
+      responseData && setNotificationData(responseData);
+      responseData && setShowNotification(true);
+      if (responseData && responseData.type === 'success') {
+        responseData && router.push('/auth/login');
+      }
+      resetForm();
     },
   });
   const handleClickShowPassword = () =>
@@ -92,10 +83,11 @@ const SignupForm = () => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+
   return (
     <Box
       sx={{
-        backgroundColor: theme.palette.common.white,
+        backgroundColor: '#fff',
         minHeight: '100vh',
       }}
     >
@@ -107,17 +99,7 @@ const SignupForm = () => {
           display: 'flex',
           justifyContent: { xs: 'center', md: 'start' },
         }}
-      >
-        <Box>
-          <Image
-            src={'/myishpos_logos.png'}
-            alt="delivery Icon"
-            width={150}
-            height={100}
-            onClick={() => router.push('/')}
-          />
-        </Box>
-      </Box>
+      ></Box>
       <Container
         component="form"
         onSubmit={formik.handleSubmit}
@@ -125,7 +107,7 @@ const SignupForm = () => {
         sx={{
           minHeight: '70vh',
           width: { xs: '90%', md: '500px' },
-          backgroundColor: theme.palette.common.white,
+          backgroundColor: '#fff',
           boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
           py: 6,
           borderRadius: 4,
@@ -146,25 +128,9 @@ const SignupForm = () => {
             variant="body1"
             position={'relative'}
             textAlign={'center'}
-            color={theme.palette.text.disabled}
+            color="gray"
           >
-            Let us bring your orders to your door step
-            <i
-              style={{
-                alignItems: 'center',
-                position: 'absolute',
-                bottom: 0,
-                height: '35px',
-                width: '40px',
-              }}
-            >
-              <Image
-                src={'/delivery.png'}
-                alt="delivery Icon"
-                width={35}
-                height={35}
-              />
-            </i>
+            Test Register
           </Typography>
           <OutlinedInput
             name="fullName"
@@ -213,15 +179,7 @@ const SignupForm = () => {
                   onMouseDown={handleMouseDownPassword}
                   edge="end"
                 >
-                  {showPassword ? (
-                    <VisibilityOff
-                      sx={{ fill: theme.palette.text.disabled }}
-                    />
-                  ) : (
-                    <Visibility
-                      sx={{ fill: theme.palette.text.disabled }}
-                    />
-                  )}
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
               </InputAdornment>
             }
@@ -245,14 +203,14 @@ const SignupForm = () => {
               Boolean(formik.errors.confirmPassword)
             }
             sx={{
-              color: 'text.disabled',
+              color: '#000',
             }}
           />
           <Typography color="error">
             {formik.errors.confirmPassword}
           </Typography>
 
-          <Typography variant="p" color={theme.palette.text.disabled}>
+          <Typography variant="p" color="gray">
             Already have an account &nbsp;
             <Typography
               variant="span"
@@ -270,7 +228,7 @@ const SignupForm = () => {
             fullWidth
             sx={{
               padding: '10px',
-              color: theme.palette.common.white,
+              color: '#fff',
             }}
             // disabled={isLoading}
           >

@@ -1,7 +1,6 @@
 'use client';
 import { Inter } from 'next/font/google';
 import { ThemeProvider, CssBaseline } from '@mui/material';
-import theme from '@/src/theme/theme';
 import { Provider } from 'react-redux';
 import store from '@/store/store';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -25,13 +24,13 @@ export default function RootLayout({ children }) {
           href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap"
           rel="stylesheet"
         />
-        <title>Delivery Service</title>
+        <title>registration</title>
       </head>
       <body className={inter.className}>
         <CssBaseline enableColorScheme />
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            <ThemeProvider theme={theme}>{children}</ThemeProvider>
+            {children}
           </PersistGate>
         </Provider>
       </body>
